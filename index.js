@@ -33,6 +33,13 @@ app.get('/tourist', async( req,res)=>{
   res.send(result)
 })
 
+app.get('/tourist/:email' , async (req,res)=>{
+  // console.log(req.params.email);
+  const result = await spotCollection.find({Email:req.params.email}).toArray()
+  // const id = req.params.email
+  // const query = {}
+  res.send(result)
+})
 app.post('/tourist',async (req,res)=>{
   const info =req.body
   console.log(info);

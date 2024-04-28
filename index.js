@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require("cors")
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const app = express()
 require('dotenv').config()
@@ -44,6 +44,12 @@ app.post('/tourist',async (req,res)=>{
   const info =req.body
   console.log(info);
   const result = await spotCollection.insertOne(info)
+  res.send(result)
+})
+app.delete('/tourist/:id',async(req,res)=>{
+  const id = req.params.id
+  const query = {_id: new ObjectId(id)}
+  const result = await spotCollection.deleteOne(query)
   res.send(result)
 })
     

@@ -33,11 +33,18 @@ app.get('/tourist', async( req,res)=>{
   res.send(result)
 })
 
-app.get('/tourist/:email' , async (req,res)=>{
-  // console.log(req.params.email);
+app.get('/tourist/getemail/:email' , async (req,res)=>{
   const result = await spotCollection.find({Email:req.params.email}).toArray()
-  // const id = req.params.email
-  // const query = {}
+
+  res.send(result)
+})
+
+app.get('/tourist/:id' , async (req,res)=>{
+  const id = req.params.id
+  console.log(id);
+  const query = {_id: new ObjectId(id)}
+  const result = await spotCollection.findOne(query)
+  console.log(result);
   res.send(result)
 })
 app.post('/tourist',async (req,res)=>{
@@ -46,13 +53,36 @@ app.post('/tourist',async (req,res)=>{
   const result = await spotCollection.insertOne(info)
   res.send(result)
 })
+app.put('/tourist/:id' , async (req,res)=>{
+  const id = req.params.id
+  const filter ={_id: new ObjectId(id)}
+  const options = {upsert:true}
+  const updatedspot = req.body
+  const spot = {
+    $set:{
+      tourists_spot_name: updatedspot.tourists_spot_name,
+      country_Name:updatedspot.country_Name,
+      location:updatedspot.location,
+      description:updatedspot.description,
+      seasonality:updatedspot.seasonality,
+      cost:updatedspot.cost,
+      travel_time:updatedspot.travel_time,
+      visitors:updatedspot.visitors,
+      photo:updatedspot.photo
+    }
+  }
+  const result = await spotCollection.updateOne(filter,spot,options)
+  res.send(result)
+})
+// app.disable('etag')
 app.delete('/tourist/:id',async(req,res)=>{
   const id = req.params.id
-  const query = {_id: new ObjectId(id)}
+  const query = { _id: new ObjectId(id)} 
   const result = await spotCollection.deleteOne(query)
   res.send(result)
 })
     
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");

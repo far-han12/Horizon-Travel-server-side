@@ -39,11 +39,7 @@ app.get('/tourist/getemail/:email' , async (req,res)=>{
 
   res.send(result)
 })
-// app.get('/tourist/findcountry/:country' , async (req,res)=>{
-//   const result = await spotCollection.find({country_Name:req.params.country}).toArray()
 
-//   res.send(result)
-// })
 app.get('/country',async(req,res)=>{
   const cursor = countryCollection.find()
   const result= await cursor.toArray()

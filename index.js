@@ -27,7 +27,7 @@ async function run() {
     const spotCollection = client.db('touristdb').collection('spots')
     const countryCollection = client.db('touristdb').collection('country')
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 app.get('/tourist', async( req,res)=>{
   const cursor = spotCollection.find()
   const result = await cursor.toArray()
@@ -90,7 +90,7 @@ app.delete('/tourist/:id',async(req,res)=>{
     
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error

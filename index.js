@@ -25,6 +25,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const spotCollection = client.db('touristdb').collection('spots')
+    const countryCollection = client.db('touristdb').collection('country')
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 app.get('/tourist', async( req,res)=>{
@@ -38,7 +39,16 @@ app.get('/tourist/getemail/:email' , async (req,res)=>{
 
   res.send(result)
 })
+// app.get('/tourist/findcountry/:country' , async (req,res)=>{
+//   const result = await spotCollection.find({country_Name:req.params.country}).toArray()
 
+//   res.send(result)
+// })
+app.get('/country',async(req,res)=>{
+  const cursor = countryCollection.find()
+  const result= await cursor.toArray()
+  res.send(result)
+})
 app.get('/tourist/:id' , async (req,res)=>{
   const id = req.params.id
   console.log(id);

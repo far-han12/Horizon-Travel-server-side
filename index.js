@@ -28,17 +28,43 @@ async function run() {
     const countryCollection = client.db('touristdb').collection('country')
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
-app.get('/tourist', async( req,res)=>{
-  const cursor = spotCollection.find()
-  const result = await cursor.toArray()
-  res.send(result)
-})
+// app.get('/tourist', async( req,res)=>{
+//   const cursor = spotCollection.find()
+//   const result = await cursor.toArray()
+//   res.send(result)
+// })
+app.get('/tourist',async(req,res)=> {
+  try {
+    const { minPrice, maxPrice } = req.query;
+    const query = {};
 
+    if (minPrice) query.
+    cost = { $gte: parseInt(minPrice) };
+    if (maxPrice) {
+      query.
+      cost = query.
+      cost || {};
+      query.
+      cost.$lte = parseInt(maxPrice);
+    }
+
+
+    const spots = await spotCollection.find(query).toArray();
+
+
+    res.send(spots);
+  } catch (error) {
+    console.error('Error fetching rooms:', error);
+    res.status(500).send(error);
+  }
+})
 app.get('/tourist/getemail/:email' , async (req,res)=>{
   const result = await spotCollection.find({Email:req.params.email}).toArray()
 
   res.send(result)
 })
+
+app
 
 app.get('/country',async(req,res)=>{
   const cursor = countryCollection.find()
@@ -80,6 +106,7 @@ app.put('/tourist/:id' , async (req,res)=>{
   const result = await spotCollection.updateOne(filter,spot,options)
   res.send(result)
 })
+
 // app.disable('etag')
 app.delete('/tourist/:id',async(req,res)=>{
   const id = req.params.id

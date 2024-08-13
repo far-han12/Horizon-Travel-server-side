@@ -71,15 +71,13 @@ app.get('/country',async(req,res)=>{
   const result= await cursor.toArray()
   res.send(result)
 })
-app.get('/spots/bycountry/:country_Name', async (req, res) => {
-  const { country_Name } = req.params;
-  try {
-      const spots = await spotCollection.find({country_Name }).toArray();
-      res.send(spots);
-  } catch (error) {
-      console.error(error);
-      res.status(500).send('Error retrieving spots');
-  }
+app.get('/spot/bycountry/:country_Name', async (req, res) => {
+  
+    const country_Name = req.params.country_Name;
+    const query = { countryId: new ObjectId(country_Name) }; 
+    const spots = await spotCollection.find(query).toArray();
+    res.send(spots);
+  
 });
 app.get('/tourist/:id' , async (req,res)=>{
   const id = req.params.id

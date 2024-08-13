@@ -71,9 +71,8 @@ app.get('/country',async(req,res)=>{
   const result= await cursor.toArray()
   res.send(result)
 })
-app.get('/spot/bycountry/:country_Name', async (req, res) => {
+app.get('/spots/bycountry/:country_Name', async (req, res) => {
   const { country_Name } = req.params;
- console.log("Country Name:", country_Name);
   try {
       const spots = await spotCollection.find({country_Name }).toArray();
       res.send(spots);

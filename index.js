@@ -82,17 +82,24 @@ app.post('/tourist',async (req,res)=>{
   const result = await spotCollection.insertOne(info)
   res.send(result)
 })
-app.get('/spots/bycountry/:country_Name', async (req, res) => {
+app.get('/spot/bycountry/:country_Name', async (req, res) => {
   try {
     const country_Name = req.params.country_Name;
-    const query = { country_Name: new ObjectId(country_Name) }; // Ensuring proper object ID handling
-    const spots = await spotCollection.find(query).toArray();
-    res.send(spots);
+    const query = { country_Name: country_Name }; 
+
+
+    const result = await spotCollection.find(query).toArray();
+    if (result.length === 0) {
+      res.status(404).send({ message: 'No spots found for this country' });
+    } else {
+      res.json(result);
+    }
   } catch (error) {
     console.error('Error fetching spots by country:', error);
     res.status(500).send(error);
   }
 });
+
 
 app.put('/tourist/:id' , async (req,res)=>{
   const id = req.params.id

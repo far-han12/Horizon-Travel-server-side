@@ -26,6 +26,8 @@ async function run() {
   try {
     const spotCollection = client.db('touristdb').collection('spots')
     const countryCollection = client.db('touristdb').collection('country')
+    const reviewCollection = client.db('touristdb').collection('reviews');
+
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
@@ -60,7 +62,37 @@ app.get('/tourist/getemail/:email' , async (req,res)=>{
   res.send(result)
 })
 
-app
+app.post("/reviews",async(req,res)=>{
+  const { name, photo, rating, text } = req.body;
+  const reviewDate = new Date();
+  const review = {
+    name,
+    photo,
+    rating: parseFloat(rating),
+    text,
+    reviewDate,
+  };
+
+  const result = await reviewCollection.insertOne(review);
+
+  res.send(result)
+})
+app.get('/reviews', async (req, res) => {
+  try {
+    const reviews = await reviewCollection.find().toArray();
+
+    reviews.forEach(review => {
+      const today = new Date();
+      const daysAgo = Math.floor((today - new Date(review.reviewDate)) / (1000 * 60 * 60 * 24));
+      review.daysAgo = daysAgo;
+    });
+
+    res.send(reviews);
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    res.status(500).send(error);
+  }
+});
 
 app.get('/country',async(req,res)=>{
   const cursor = countryCollection.find()

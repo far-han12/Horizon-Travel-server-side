@@ -8,19 +8,8 @@ require('dotenv').config()
 const port = process.env.PORT || 5000;
 // middleware
 app.use(cors())
-app.use(express.json({
-  origin :[
-    '  https://react-tourism-server.vercel.app',
-    'https://horizon-travel-client-side.vercel.app',
-  
-  ],
-  credentials : true
-}))
-// let corsOptions = {
-//   origin: "http://localhost:3000"
-// };
-// app.use(cors({ origin: '  https://react-tourism-server.vercel.app' }));
-// app.use(cors(corsOptions));
+app.use(express.json())
+
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xfw0kqg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -39,11 +28,7 @@ async function run() {
     const countryCollection = client.db('touristdb').collection('country')
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
-// app.get('/tourist', async( req,res)=>{
-//   const cursor = spotCollection.find()
-//   const result = await cursor.toArray()
-//   res.send(result)
-// })
+
 app.get('/tourist',async(req,res)=> {
   try {
     const { minPrice, maxPrice } = req.query;
@@ -82,14 +67,7 @@ app.get('/country',async(req,res)=>{
   const result= await cursor.toArray()
   res.send(result)
 })
-app.get('/spot/bycountry/:country_Name', async (req, res) => {
-  
-    const country_Name = req.params.country_Name;
-    const query = { country_Name: new ObjectId(country_Name  ) }; 
-    const spots = await spotCollection.find(query).toArray();
-    res.send(spots);
-  
-});
+
 app.get('/tourist/:id' , async (req,res)=>{
   const id = req.params.id
   console.log(id);
@@ -104,6 +82,18 @@ app.post('/tourist',async (req,res)=>{
   const result = await spotCollection.insertOne(info)
   res.send(result)
 })
+app.get('/spots/bycountry/:country_Name', async (req, res) => {
+  try {
+    const country_Name = req.params.country_Name;
+    const query = { country_Name: new ObjectId(country_Name) }; // Ensuring proper object ID handling
+    const spots = await spotCollection.find(query).toArray();
+    res.send(spots);
+  } catch (error) {
+    console.error('Error fetching spots by country:', error);
+    res.status(500).send(error);
+  }
+});
+
 app.put('/tourist/:id' , async (req,res)=>{
   const id = req.params.id
   const filter ={_id: new ObjectId(id)}

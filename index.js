@@ -8,8 +8,19 @@ require('dotenv').config()
 const port = process.env.PORT || 5000;
 // middleware
 app.use(cors())
-app.use(express.json())
-
+app.use(express.json({
+  origin :[
+    '  https://react-tourism-server.vercel.app',
+    'https://horizon-travel-client-side.vercel.app',
+  
+  ],
+  credentials : true
+}))
+// let corsOptions = {
+//   origin: "http://localhost:3000"
+// };
+// app.use(cors({ origin: '  https://react-tourism-server.vercel.app' }));
+// app.use(cors(corsOptions));
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xfw0kqg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -74,7 +85,7 @@ app.get('/country',async(req,res)=>{
 app.get('/spot/bycountry/:country_Name', async (req, res) => {
   
     const country_Name = req.params.country_Name;
-    const query = { countryId: new ObjectId(country_Name) }; 
+    const query = { country_Name: new ObjectId(country_Name  ) }; 
     const spots = await spotCollection.find(query).toArray();
     res.send(spots);
   
